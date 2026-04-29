@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet # 一個模板產生多個 Application
+metadata:
+  name: argocd
+  namespace: infra
+spec:
+  generators:
+  - list:
+      elements:
+      # 新增/移除環境只改這裡
+      - env: dev
+      - env: stg
+      - env: prod
+
+  template:
+    # 以下 {{env}} 會被上面的值取代
+    metadata:
+      name: 'argocd-{{env}}'
+      namespace: infra
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/zxcbig7/MyDevWeb-Deployment.git
+        targetRevision: HEAD
+        path: argocd
+        helm:
+          releaseName: 'argocd-{{env}}' # Helm Release 名稱
+          valueFiles:
+          - values.yaml
+          - 'values-{{env}}.yaml' # 對應 values-dev/stg/prod.yaml
+      destination:
+        server: https://kubernetes.default.svc # 代表 ArgoCD 自己的 Kubernetes API Server
+        namespace: '{{env}}' # 部署到同名 namespace
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true

@@ -1,0 +1,11 @@
+# TLS 憑證（不能上傳到 Git）
+tls.key
+tls.crt
+certificate.pem
+private-key.pem
+
+# 系統檔案
+.DS_Store
+Thumbs.db
+
+.md

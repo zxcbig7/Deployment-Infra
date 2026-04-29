@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: harbor
+  namespace: infra
+spec:
+  project: default
+  source:
+    repoURL: https://helm.goharbor.io
+    chart: harbor
+    targetRevision: 1.15.1
+    helm:
+      releaseName: harbor
+      values: |
+        expose:
+          type: ingress
+          ingress:
+            hosts:
+              core: harbor.local
+          tls:
+            enabled: false
+        externalURL: http://harbor.local
+        harborAdminPassword: "Harbor12345"
+        persistence:
+          enabled: true
+          persistentVolumeClaim:
+            registry:
+              size: 5Gi
+            database:
+              size: 1Gi
+            redis:
+              size: 1Gi
+        trivy:
+          enabled: false
+        notary:
+          enabled: false
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: harbor
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
