@@ -9,3 +9,5 @@ private-key.pem
 Thumbs.db
 
 .md
+
+.claude/
