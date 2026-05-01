@@ -95,9 +95,12 @@ if errorlevel 1 (
 
 rem Apply infra app manifests
 echo Applying infra manifests...
+kubectl apply -f "%~dp0infra\argocd-infra-rbac.yaml"
 kubectl apply -f "%~dp0infra\argo-app.yaml"
 kubectl apply -f "%~dp0infra\vault-app.yaml"
 kubectl apply -f "%~dp0infra\harbor-app.yaml"
+kubectl apply -f "%~dp0infra\postgresql-external-secret.yaml"
+kubectl apply -f "%~dp0infra\postgresql-app.yaml"
 kubectl apply -f "%~dp0infra\argocd-ingress.yaml"
 kubectl apply -f "%~dp0infra\dashboard-ingress.yaml"
 echo.
@@ -111,8 +114,12 @@ if errorlevel 1 (
     goto wait_vault
 )
 echo Vault pod found, unsealing...
-kubectl exec -n infra vault-0 -- vault operator unseal z6Hs0Q55Aq7x3u1Pg1br8gjikKg6XjYHxxAbb/hVXKlT
-kubectl exec -n infra vault-0 -- vault operator unseal MzrsndE9Vzj9fkGndKPfsAk+c+pamFqSKOn0zsDOC6uL
+set /p UNSEAL_KEY_1="Enter Unseal Key 1: "
+kubectl exec -n infra vault-0 -- vault operator unseal %UNSEAL_KEY_1%
+set /p UNSEAL_KEY_2="Enter Unseal Key 2: "
+kubectl exec -n infra vault-0 -- vault operator unseal %UNSEAL_KEY_2%
+set UNSEAL_KEY_1=
+set UNSEAL_KEY_2=
 echo.
 
 rem Start all services in Windows Terminal tabs
@@ -120,17 +127,7 @@ wt --window new ^
   new-tab --title "argocd-creds" powershell -NoExit -File "%~dp0argocd-creds.ps1" ^
   ; new-tab --title "minikube-tunnel" cmd /k "minikube tunnel" ^
   ; new-tab --title "cloudflared" cmd /k "cloudflared tunnel run k8s-tunnel" ^
+  ; new-tab --title "postgresql" cmd /k "kubectl port-forward svc/postgresql -n infra 5432:5432" ^
   ; new-tab --title "top" powershell -NoExit -File "%~dp0top.ps1"
 
 echo All services started!
-
-echo.
-echo ================================
-echo  ArgoCD UI    : https://argocd.viclai.idv.tw
-echo  K8s Dashboard: https://dashboard.local
-echo  Vault UI     : https://vault.viclai.idv.tw
-echo  Harbor       : https://harbor.viclai.idv.tw
-echo  Docker Data  : \\wsl$\docker-desktop-data\
-echo ================================
-echo.
-pause

@@ -20,7 +20,8 @@ spec:
           tls:
             enabled: false
         externalURL: http://harbor.viclai.idv.tw
-        harborAdminPassword: "Harbor12345"
+        existingSecretAdminPassword: harbor-admin-secret
+        existingSecretAdminPasswordKey: adminPassword
         persistence:
           enabled: true
           persistentVolumeClaim:
