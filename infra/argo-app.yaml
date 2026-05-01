@@ -20,7 +20,7 @@ spec:
     spec:
       project: default # ArgoCD 預設專案
       source:
-        repoURL: https://github.com/zxcbig7/MyDevWeb-Deployment.git
+        repoURL: https://github.com/zxcbig7/Deployment-Apps.git
         targetRevision: HEAD
         path: argocd
         helm:
