@@ -26,6 +26,13 @@ spec:
               storage "file" {
                 path = "/vault/data"
               }
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            hosts:
+              - host: vault.viclai.idv.tw
+                paths:
+                  - /
           dataStorage:
             enabled: true
             size: 1Gi
@@ -43,7 +50,7 @@ spec:
           enabled: false
   destination:
     server: https://kubernetes.default.svc
-    namespace: vault
+    namespace: infra
   syncPolicy:
     automated:
       prune: true

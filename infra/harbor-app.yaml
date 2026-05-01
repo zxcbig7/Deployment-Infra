@@ -16,10 +16,10 @@ spec:
           type: ingress
           ingress:
             hosts:
-              core: harbor.local
+              core: harbor.viclai.idv.tw
           tls:
             enabled: false
-        externalURL: http://harbor.local
+        externalURL: http://harbor.viclai.idv.tw
         harborAdminPassword: "Harbor12345"
         persistence:
           enabled: true
@@ -34,13 +34,57 @@ spec:
           enabled: false
         notary:
           enabled: false
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "256Mi"
+        core:
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+        portal:
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "32Mi"
+            limits:
+              cpu: "50m"
+              memory: "64Mi"
+        jobservice:
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+        registry:
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+        database:
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+        redis:
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
   destination:
     server: https://kubernetes.default.svc
-    namespace: harbor
+    namespace: infra
   syncPolicy:
     automated:
       prune: true
