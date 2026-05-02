@@ -14,12 +14,18 @@ spec:
       values: |
         expose:
           type: ingress
+          tls:
+            enabled: true
+            certSource: secret
+            secret:
+              secretName: "harbor-tls"
           ingress:
             hosts:
               core: harbor.viclai.idv.tw
-          tls:
-            enabled: false
-        externalURL: http://harbor.viclai.idv.tw
+            annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt-prod"
+              nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        externalURL: https://harbor.viclai.idv.tw
         existingSecretAdminPassword: harbor-admin-secret
         existingSecretAdminPasswordKey: adminPassword
         persistence:
