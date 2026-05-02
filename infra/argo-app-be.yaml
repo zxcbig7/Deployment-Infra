@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argocd-be
+  namespace: infra
+spec:
+  generators:
+  - list:
+      elements:
+      - env: dev
+        envDir: DEV
+      - env: stg
+        envDir: STG
+      - env: prod
+        envDir: PROD
+
+  template:
+    metadata:
+      name: 'argocd-be-{{env}}'
+      namespace: infra
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/zxcbig7/Deployment-Apps.git
+        targetRevision: HEAD
+        path: 'mydevweb-be/{{envDir}}'
+        helm:
+          releaseName: 'argocd-{{env}}'
+          valueFiles:
+          - values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{env}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
