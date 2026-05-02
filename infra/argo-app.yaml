@@ -22,12 +22,11 @@ spec:
       source:
         repoURL: https://github.com/zxcbig7/Deployment-Apps.git
         targetRevision: HEAD
-        path: argocd
+        path: 'mydevweb-fe/{{env | upper}}'
         helm:
-          releaseName: 'argocd-{{env}}' # Helm Release 名稱
+          releaseName: 'argocd-{{env}}'
           valueFiles:
           - values.yaml
-          - 'values-{{env}}.yaml' # 對應 values-dev/stg/prod.yaml
       destination:
         server: https://kubernetes.default.svc # 代表 ArgoCD 自己的 Kubernetes API Server
         namespace: '{{env}}' # 部署到同名 namespace
