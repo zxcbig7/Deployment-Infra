@@ -7,10 +7,12 @@ spec:
   generators:
   - list:
       elements:
-      # 新增/移除環境只改這裡
       - env: dev
+        envDir: DEV
       - env: stg
+        envDir: STG
       - env: prod
+        envDir: PROD
 
   template:
     # 以下 {{env}} 會被上面的值取代
@@ -22,7 +24,7 @@ spec:
       source:
         repoURL: https://github.com/zxcbig7/Deployment-Apps.git
         targetRevision: HEAD
-        path: 'mydevweb-fe/{{env | upper}}'
+        path: 'mydevweb-fe/{{envDir}}'
         helm:
           releaseName: 'argocd-{{env}}'
           valueFiles:
